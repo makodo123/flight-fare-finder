@@ -1,32 +1,14 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/auth")({
-  ssr: false,
-  head: () => ({
-    meta: [
-      { title: "Sign in — Flight Price Notifier" },
-      {
-        name: "description",
-        content: "登入或註冊 Flight Price Notifier，開始追蹤機票降價通知。",
-      },
-      { property: "og:title", content: "Sign in — Flight Price Notifier" },
-      {
-        property: "og:description",
-        content: "Sign in or create an account to start tracking flight price drops.",
-      },
-    ],
-  }),
-  component: AuthPage,
-});
+type AuthMode = "signin" | "signup";
 
-function AuthPage() {
+export default function AuthPage({ mode }: { mode: AuthMode }) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +16,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+      if (data.session) navigate("/app", { replace: true });
     });
   }, [navigate]);
 
@@ -56,7 +38,7 @@ function AuthPage() {
       return;
     }
     const { data } = await supabase.auth.getSession();
-    if (data.session) navigate({ to: "/app", replace: true });
+    if (data.session) navigate("/app", { replace: true });
     else setError("請先到信箱確認帳號後再登入。");
   }
 
@@ -110,7 +92,7 @@ function AuthPage() {
             type="button"
             className="mt-5 w-full text-center text-sm text-muted-foreground hover:text-foreground"
             onClick={() => {
-              setMode(mode === "signin" ? "signup" : "signin");
+              navigate(mode === "signin" ? "/sign-up" : "/sign-in");
               setError(null);
             }}
           >

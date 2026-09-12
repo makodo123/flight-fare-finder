@@ -1,32 +1,16 @@
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { User } from "@supabase/supabase-js";
+
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/_authenticated/app")({
-  head: () => ({
-    meta: [
-      { title: "Dashboard — Flight Price Notifier" },
-      { name: "description", content: "你的航線追蹤儀表板 — Flight Price Notifier." },
-      { property: "og:title", content: "Dashboard — Flight Price Notifier" },
-      { property: "og:description", content: "Your flight route tracking dashboard." },
-    ],
-  }),
-  component: AppShell,
-});
-
-function AppShell() {
-  const { user } = Route.useRouteContext();
+export default function AppShell() {
+  const { user } = useOutletContext<{ user: User }>();
   const navigate = useNavigate();
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
   async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
     await supabase.auth.signOut();
-    await router.invalidate();
-    navigate({ to: "/", replace: true });
+    navigate("/", { replace: true });
   }
 
   return (
