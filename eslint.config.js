@@ -7,11 +7,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [
-      "dist",
-      "src/integrations/supabase/types.ts",
-      "src/integrations/supabase/previewAuthStorage.ts",
-    ],
+    ignores: ["dist", "src/integrations/supabase/types.ts"],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

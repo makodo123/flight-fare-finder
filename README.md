@@ -20,7 +20,7 @@ Card 3: 「隨時取消 (Cancel anytime)」 — 月訂閱制，不想用隨時�
 
 Footer with copyright 「© 2026 Flight Price Notifier」.
 
-Authentication using Lovable's built-in Supabase-style auth (use whatever auth backend Lovable provides by default — Lovable Cloud is fine for this v1; we'll swap to a user-owned Supabase project in a later step):
+Authentication uses Supabase Auth in the user-owned project configured by `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`:
 
 Sign Up page with email + password
 
