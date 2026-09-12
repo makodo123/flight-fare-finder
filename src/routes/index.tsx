@@ -26,69 +26,109 @@ const features = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 backdrop-blur">
+    <div className="solar-page text-foreground">
+      <header className="solar-header sticky top-0 z-20 border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-          <span className="text-sm font-semibold tracking-tight sm:text-base">
-            Flight Price Notifier
-          </span>
-          <Button asChild size="sm">
-            <Link to="/sign-in">Sign in / 登入</Link>
-          </Button>
+          <Link to="/" className="brand-lockup" aria-label="Flight Price Notifier home">
+            <span className="brand-symbol" aria-hidden="true">
+              ✦
+            </span>
+            <span>
+              Flight Price
+              <br />
+              Notifier
+            </span>
+          </Link>
+          <div className="flex items-center gap-5">
+            <span className="header-signal hidden sm:inline-flex">TPE / live fare signal</span>
+            <Button asChild size="sm" className="header-cta">
+              <Link to="/sign-in">Sign in / 登入</Link>
+            </Button>
+          </div>
         </div>
       </header>
 
       <main>
-        <section className="relative overflow-hidden">
-          <div className="hero-glow pointer-events-none absolute inset-0" aria-hidden="true" />
-          <div className="relative mx-auto max-w-4xl px-5 py-24 text-center sm:py-32">
-            <Reveal>
-              <p className="mb-5 inline-flex rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
-                台北出發 · 東京 / 首爾
-              </p>
-              <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
-                <span className="text-gradient">Flight Price Notifier</span>
-              </h1>
-              <p className="mt-6 text-xl font-medium sm:text-2xl">
-                設定航線與目標價，機票降價就通知你
-              </p>
-              <p className="mt-3 text-base text-muted-foreground">
-                Set a route and a target price — we email you when the fare drops.
-              </p>
-              <div className="mt-9 flex justify-center">
-                <Button asChild size="lg">
-                  <Link to="/sign-in">Sign in / 登入</Link>
-                </Button>
-              </div>
-            </Reveal>
+        <section className="hero-surface">
+          <div className="mx-auto max-w-6xl px-5">
+            <div className="hero-content">
+              <Reveal>
+                <div className="eyebrow-chip">台北出發 · 東京 / 首爾</div>
+                <h1 className="hero-title">
+                  Flight Price
+                  <br />
+                  <span className="title-outline">Notifier</span>
+                </h1>
+                <p className="hero-subtitle">設定航線與目標價，機票降價就通知你</p>
+                <p className="hero-copy">
+                  Set a route and a target price — we email you when the fare drops. Follow the
+                  signal, then take off.
+                </p>
+                <div className="hero-actions">
+                  <Button asChild size="lg" className="solar-button">
+                    <Link to="/sign-in">Sign in / 登入</Link>
+                  </Button>
+                </div>
+              </Reveal>
+
+              <Reveal delay={180}>
+                <div className="hero-orbit-card" aria-label="Live route signal preview">
+                  <div className="orbit-card-top">
+                    <span>Route watch</span>
+                    <strong>Live</strong>
+                  </div>
+                  <div className="orbit-visual" aria-hidden="true">
+                    <div className="orbit-globe">✦</div>
+                  </div>
+                  <div className="orbit-card-bottom">
+                    <span>TPE / NRT</span>
+                    <span>Price signal</span>
+                  </div>
+                  <div className="signal-line" />
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                    Watch the horizon for a fare worth catching.
+                  </p>
+                </div>
+              </Reveal>
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-5 pb-28">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f, i) => (
-              <Reveal key={f.en} delay={i * 120}>
-                <article className="h-full rounded-2xl border border-border bg-card p-7 transition-colors hover:border-primary/50">
-                  <div className="mb-5 inline-flex size-11 items-center justify-center rounded-xl bg-accent text-primary">
-                    <f.icon className="size-5" />
-                  </div>
-                  <h2 className="text-lg font-semibold">
-                    {f.title}{" "}
-                    <span className="block text-sm font-normal text-muted-foreground">
-                      ({f.en})
-                    </span>
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
-                </article>
-              </Reveal>
-            ))}
+        <section className="feature-section">
+          <div className="mx-auto max-w-6xl px-5">
+            <Reveal>
+              <p className="section-kicker">The signal beneath the surface</p>
+              <h2 className="section-title">One quiet signal. A better time to fly.</h2>
+            </Reveal>
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((f, i) => (
+                <Reveal key={f.en} delay={i * 120}>
+                  <article className="feature-card h-full">
+                    <div className="feature-index">0{i + 1} / 03</div>
+                    <div className="feature-icon">
+                      <f.icon className="size-5" />
+                    </div>
+                    <h2>
+                      {f.title} <span>({f.en})</span>
+                    </h2>
+                    <p className="mt-3 text-sm">{f.body}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-border/60">
-        <div className="mx-auto max-w-6xl px-5 py-8 text-center text-sm text-muted-foreground">
-          © 2026 Flight Price Notifier
+      <footer className="solar-footer border-t">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span className="brand-lockup text-[0.58rem]">
+            <span className="brand-symbol size-6 text-xs" aria-hidden="true">
+              ✦
+            </span>
+            Flight Price Notifier
+          </span>
+          <span>© 2026 Flight Price Notifier · Keep your eyes on the horizon.</span>
         </div>
       </footer>
     </div>
