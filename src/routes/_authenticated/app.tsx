@@ -159,6 +159,9 @@ export default function AppShell() {
                       <p className="route-code">{item.route}</p>
                       <h2 className="mt-3 text-2xl font-semibold tracking-tight">{item.city}</h2>
                       <p className="mt-1 text-sm text-muted-foreground">{item.english}</p>
+                      {subscription ? (
+                        <span className="subscription-badge">已訂閱 / Tracking</span>
+                      ) : null}
                     </div>
                     <span className="route-orbit" aria-hidden="true">
                       ✦

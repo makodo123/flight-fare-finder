@@ -691,6 +691,19 @@
   letter-spacing: 0.18em;
 }
 
+.subscription-badge {
+  display: inline-flex;
+  margin-top: 0.9rem;
+  border: 1px solid oklch(0.79 0.13 73 / 45%);
+  border-radius: 999px;
+  background: oklch(0.79 0.13 73 / 12%);
+  padding: 0.28rem 0.55rem;
+  color: oklch(0.92 0.08 83);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
 .route-orbit {
   display: grid;
   width: 2.5rem;
