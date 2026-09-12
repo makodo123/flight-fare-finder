@@ -4,15 +4,47 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LanguageToggle } from "@/components/language";
+import { useLanguage } from "@/lib/language";
 
 type AuthMode = "signin" | "signup";
 
 export default function AuthPage({ mode }: { mode: AuthMode }) {
+  const { locale } = useLanguage();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const isChinese = locale === "zh-TW";
+  const copy = isChinese
+    ? {
+        back: "← 回到 Flight Price Notifier",
+        eyebrow: "安全的航班價格通知",
+        signIn: "登入",
+        signUp: "註冊",
+        description: mode === "signin" ? "使用 Email 與密碼登入。" : "使用 Email 與密碼建立帳號。",
+        password: "密碼",
+        wait: "請稍候…",
+        missingAccount: "還沒有帳號？前往註冊",
+        existingAccount: "已經有帳號？前往登入",
+        confirm: "請先到信箱確認帳號後再登入。",
+      }
+    : {
+        back: "← Back to Flight Price Notifier",
+        eyebrow: "Secure flight signal",
+        signIn: "Sign in",
+        signUp: "Sign up",
+        description:
+          mode === "signin"
+            ? "Sign in with your email and password."
+            : "Create an account with your email and password.",
+        password: "Password",
+        wait: "Please wait…",
+        missingAccount: "New here? Create an account",
+        existingAccount: "Already have an account? Sign in",
+        confirm: "Check your inbox to confirm your account, then sign in.",
+      };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -39,23 +71,24 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
     }
     const { data } = await supabase.auth.getSession();
     if (data.session) navigate("/app", { replace: true });
-    else setError("請先到信箱確認帳號後再登入。");
+    else setError(copy.confirm);
   }
 
   return (
     <div className="auth-surface flex items-center justify-center px-5 py-16">
       <div className="auth-content w-full max-w-sm">
+        <div className="mb-4 flex justify-end">
+          <LanguageToggle />
+        </div>
         <Link to="/" className="auth-back mb-7 block text-center">
-          ← Back to Flight Price Notifier
+          {copy.back}
         </Link>
         <div className="auth-card">
-          <div className="eyebrow-chip mb-5">Secure flight signal</div>
+          <div className="eyebrow-chip mb-5">{copy.eyebrow}</div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {mode === "signin" ? "登入 Sign in" : "註冊 Sign up"}
+            {mode === "signin" ? copy.signIn : copy.signUp}
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            使用 email 與密碼{mode === "signin" ? "登入" : "建立帳號"}。
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{copy.description}</p>
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label className="auth-label" htmlFor="email">
@@ -73,7 +106,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
             </div>
             <div className="space-y-2">
               <Label className="auth-label" htmlFor="password">
-                Password 密碼
+                {copy.password}
               </Label>
               <Input
                 className="auth-input"
@@ -88,7 +121,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
             </div>
             {error ? <p className="text-sm text-destructive">{error}</p> : null}
             <Button type="submit" className="solar-button auth-submit" disabled={loading}>
-              {loading ? "請稍候…" : mode === "signin" ? "Sign in / 登入" : "Sign up / 註冊"}
+              {loading ? copy.wait : mode === "signin" ? copy.signIn : copy.signUp}
             </Button>
           </form>
           <button
@@ -99,7 +132,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
               setError(null);
             }}
           >
-            {mode === "signin" ? "還沒有帳號？註冊 Sign up" : "已經有帳號？登入 Sign in"}
+            {mode === "signin" ? copy.missingAccount : copy.existingAccount}
           </button>
         </div>
       </div>
