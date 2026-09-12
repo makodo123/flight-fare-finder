@@ -669,6 +669,65 @@
   padding: clamp(1.5rem, 4vw, 2.6rem);
 }
 
+.subscription-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.route-card {
+  border: 1px solid oklch(0.95 0.04 84 / 23%);
+  border-radius: 1.35rem;
+  background: linear-gradient(145deg, oklch(0.15 0.04 225 / 86%), oklch(0.24 0.045 215 / 78%));
+  padding: clamp(1.35rem, 3vw, 2rem);
+  box-shadow: 0 24px 60px oklch(0.03 0.03 225 / 34%);
+  backdrop-filter: blur(24px);
+}
+
+.route-code {
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.18em;
+}
+
+.route-orbit {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid oklch(0.79 0.13 73 / 45%);
+  border-radius: 50%;
+  color: var(--color-primary);
+  box-shadow: 0 0 24px oklch(0.79 0.13 73 / 16%);
+}
+
+.route-target {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid oklch(0.95 0.04 84 / 22%);
+  border-radius: 0.7rem;
+  background: oklch(0.06 0.03 225 / 34%);
+  padding: 0 0.8rem;
+  color: var(--color-foreground);
+  font-weight: 750;
+  outline: none;
+}
+
+.route-target:focus {
+  border-color: oklch(0.79 0.13 73 / 68%);
+  box-shadow: 0 0 0 3px oklch(0.79 0.13 73 / 15%);
+}
+
+.dashboard-message {
+  border: 1px solid oklch(0.79 0.13 73 / 35%);
+  border-radius: 0.8rem;
+  background: oklch(0.79 0.13 73 / 9%);
+  padding: 0.8rem 1rem;
+  color: oklch(0.92 0.06 83);
+  font-size: 0.85rem;
+}
+
 .user-signal {
   display: inline-flex;
   align-items: center;
@@ -699,6 +758,10 @@
 }
 
 @media (max-width: 800px) {
+  .subscription-grid {
+    grid-template-columns: 1fr;
+  }
+
   .hero-surface {
     min-height: auto;
     background-position:
