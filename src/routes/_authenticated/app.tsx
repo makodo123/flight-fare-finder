@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/language";
 import { useLanguage } from "@/lib/language";
 
-type RouteKey = "TPE-TYO" | "TPE-SEL";
+type RouteKey = "TPE-TYO" | "TPE-SEL" | "TPE-LON";
 
 type Subscription = {
   route: RouteKey;
@@ -22,6 +22,7 @@ const routes: Array<{
 }> = [
   { route: "TPE-TYO", city: "台北 → 東京", english: "Taipei to Tokyo" },
   { route: "TPE-SEL", city: "台北 → 首爾", english: "Taipei to Seoul" },
+  { route: "TPE-LON", city: "台北 → 倫敦", english: "Taipei to London" },
 ];
 
 function apiUrl(path: string) {
@@ -40,6 +41,7 @@ export default function AppShell() {
   const [targets, setTargets] = useState<Record<RouteKey, string>>({
     "TPE-TYO": "12000",
     "TPE-SEL": "10000",
+    "TPE-LON": "30000",
   });
   const [loading, setLoading] = useState(true);
   const [savingRoute, setSavingRoute] = useState<RouteKey | null>(null);

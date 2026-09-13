@@ -24,7 +24,11 @@ _secrets = boto3.client("secretsmanager")
 
 
 def route_label(route: str) -> str:
-    return {"TPE-TYO": "台北 → 東京", "TPE-SEL": "台北 → 首爾"}.get(route, route.replace("-", " → "))
+    return {
+        "TPE-TYO": "台北 → 東京",
+        "TPE-SEL": "台北 → 首爾",
+        "TPE-LON": "台北 → 倫敦",
+    }.get(route, route.replace("-", " → "))
 
 
 def booking_url(route: str, fare: dict) -> str:

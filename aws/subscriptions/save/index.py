@@ -12,6 +12,7 @@ TABLE_NAME = os.environ.get("TABLE_NAME", "subscriptions")
 PLANS = {
     "TPE-TYO": {"plan_name": "tokyo", "origin": "TPE", "destination": "TYO"},
     "TPE-SEL": {"plan_name": "seoul", "origin": "TPE", "destination": "SEL"},
+    "TPE-LON": {"plan_name": "london", "origin": "TPE", "destination": "LON"},
 }
 _table = boto3.resource("dynamodb").Table(TABLE_NAME)
 
