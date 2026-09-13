@@ -34,7 +34,10 @@
         "sqs:DeleteMessage",
         "sqs:GetQueueAttributes"
       ],
-      "Resource": "arn:aws:sqs:us-east-1:094257358176:flight-fare-queue"
+      "Resource": [
+        "arn:aws:sqs:us-east-1:094257358176:flight-fare-queue",
+        "arn:aws:sqs:us-east-1:094257358176:flight-status-queue"
+      ]
     },
     {
       "Effect": "Allow",

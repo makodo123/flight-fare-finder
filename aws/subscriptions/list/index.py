@@ -1,4 +1,4 @@
-"""List the M1 subscriptions associated with one email address."""
+"""List the paid subscriptions associated with one email address."""
 
 import json
 import os

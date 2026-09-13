@@ -5,7 +5,7 @@ import os
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import date
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 import boto3
@@ -76,6 +76,25 @@ def subscription_items(route: str):
         scan_kwargs["ExclusiveStartKey"] = page["LastEvaluatedKey"]
 
 
+def is_eligible(subscriber: dict) -> bool:
+    status = subscriber.get("subscription_status")
+    if status == "active":
+        return True
+    if status == "cancelled":
+        try:
+            end = datetime.fromisoformat(str(subscriber.get("current_period_end", "")).replace("Z", "+00:00"))
+        except ValueError:
+            end = datetime.min.replace(tzinfo=timezone.utc)
+        if end >= datetime.now(timezone.utc):
+            return True
+        _subscriptions.update_item(
+            Key={"email": subscriber["email"], "route": subscriber["route"]},
+            UpdateExpression="SET subscription_status=:expired, updated_at=:now",
+            ExpressionAttributeValues={":expired": "expired", ":now": datetime.now(timezone.utc).isoformat()},
+        )
+    return False
+
+
 def handler(event, _context):
     origin = str(event["origin"]).upper()
     destination = str(event["destination"]).upper()
@@ -90,6 +109,8 @@ def handler(event, _context):
     usd = fetch_cheapest(origin, destination, month, token, "usd")
     matched = 0
     for subscriber in subscription_items(route):
+        if not is_eligible(subscriber):
+            continue
         target_price = Decimal(str(subscriber["target_price"]))
         if target_price < Decimal(str(twd["price"])):
             continue
