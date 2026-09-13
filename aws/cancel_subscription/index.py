@@ -40,10 +40,14 @@ def handler(event, _context):
 
     secret = load_secret(_secrets, ECPAY_SECRET_ID)
     if item.get("merchant_trade_no"):
+        request_time = str(int(datetime.now(timezone.utc).timestamp()))
         params = {
             "MerchantID": str(secret.get("merchant_id") or secret.get("MerchantID")),
             "MerchantTradeNo": item["merchant_trade_no"],
             "Action": "Cancel",
+            # ECPay rejects periodic-action calls outside its short validation
+            # window. TimeStamp must also be included in CheckMacValue.
+            "TimeStamp": request_time,
         }
         params["CheckMacValue"] = check_mac_value(params, secret)
         request = urllib.request.Request(
@@ -54,9 +58,18 @@ def handler(event, _context):
         )
         try:
             with urllib.request.urlopen(request, timeout=15) as result:
-                response_params = urllib.parse.parse_qs(result.read().decode("utf-8"), keep_blank_values=True)
-            rtn_code = (response_params.get("RtnCode") or [""])[-1]
+                raw_response = result.read().decode("utf-8", "replace")
+            try:
+                response_params = json.loads(raw_response)
+            except json.JSONDecodeError:
+                response_params = {
+                    key: values[-1]
+                    for key, values in urllib.parse.parse_qs(raw_response, keep_blank_values=True).items()
+                }
+            rtn_code = str(response_params.get("RtnCode", ""))
             if rtn_code != "1":
+                rtn_message = str(response_params.get("RtnMsg", ""))[:160]
+                print(f"ECPay cancellation declined: RtnCode={rtn_code}, RtnMsg={rtn_message}")
                 return json_response(502, {"error": "ECPay could not cancel this subscription"})
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
             print(f"ECPay cancellation failed: {type(error).__name__}")
