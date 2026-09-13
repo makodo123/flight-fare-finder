@@ -29,7 +29,13 @@ def send_email(secret, recipient, subject, html_body, text_body):
     request = urllib.request.Request(
         "https://api.resend.com/emails",
         data=json.dumps({"from": secret["from"], "to": recipient, "subject": subject, "html": html_body, "text": text_body}).encode("utf-8"),
-        headers={"Authorization": f"Bearer {secret['api_key']}", "Content-Type": "application/json"},
+        # Resend rejects direct HTTP requests without a User-Agent (HTTP 403,
+        # error 1010), so include a stable identifier for this Lambda client.
+        headers={
+            "Authorization": f"Bearer {secret['api_key']}",
+            "Content-Type": "application/json",
+            "User-Agent": "flight-fare-finder-status-notification/1.0",
+        },
         method="POST",
     )
     try:
@@ -58,9 +64,24 @@ def handler(event, _context):
         label = html.escape(route_label(route))
         end = html.escape(str(message.get("current_period_end", "")))
         if event_type == "welcome":
-            subject = f"✈️ {route_label(route)} 訂閱成功"
-            html_body = f"<h1>訂閱成功</h1><p>{label} 已開始監控。</p><p>有效至：{end}</p>"
-            text_body = f"{route_label(route)} 訂閱成功，已開始監控。有效至：{end}"
+            subject = f"歡迎訂閱 Flight Price Notifier ✈️ ({route})"
+            html_body = f"""<!doctype html>
+<html lang="zh-Hant"><body style="margin:0;background:#f6f8fb;color:#202124;font-family:Arial,'Noto Sans TC',sans-serif;">
+  <main style="max-width:620px;margin:32px auto;padding:36px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;">
+    <h1 style="margin:0 0 24px;font-size:26px;">訂閱成功！Welcome aboard ✈️</h1>
+    <p style="font-size:16px;line-height:1.7;">你已成功訂閱 <strong>{label}</strong> 航線的降價通知。當票價達到你的目標價，我們會立刻寄信通知你。</p>
+    <p style="font-size:16px;line-height:1.7;">You're now subscribed to price-drop alerts for <strong>{label}</strong>. We'll email you the moment the fare hits your target.</p>
+    <p style="font-size:16px;line-height:1.7;">隨時可在會員中心取消訂閱。</p>
+    <p style="margin:28px 0 0;color:#6b7280;font-size:13px;">訂閱有效至：{end}</p>
+  </main>
+</body></html>"""
+            text_body = (
+                f"訂閱成功！Welcome aboard ✈️\n\n"
+                f"你已成功訂閱 {route_label(route)} 航線的降價通知。當票價達到你的目標價，我們會立刻寄信通知你。\n\n"
+                f"You're now subscribed to price-drop alerts for {route_label(route)}. "
+                "We'll email you the moment the fare hits your target.\n\n"
+                f"隨時可在會員中心取消訂閱。\n訂閱有效至：{end}"
+            )
         else:
             subject = f"{route_label(route)} 訂閱已取消"
             html_body = f"<h1>訂閱已取消</h1><p>{label} 將持續有效至：{end}</p>"
