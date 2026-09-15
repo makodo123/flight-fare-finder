@@ -137,7 +137,10 @@ def handler(event, _context):
     now_iso = now.isoformat()
     status = current_status(existing)
 
-    if status == "active" or is_cancelled_in_grace(existing):
+    # A cancelled agreement must always start a fresh ECPay checkout, even
+    # while its already-paid period remains usable.  Only an active agreement
+    # can update its target price without collecting a new payment.
+    if status == "active":
         status = update_route(existing, email, route, plan, target_price, now_iso)
         return response(
             200,
