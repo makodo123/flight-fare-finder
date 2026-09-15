@@ -71,6 +71,10 @@ def handler(event, _context):
             MessageBody=json.dumps(
                 {
                     "event_type": "welcome",
+                    # The ECPay trade number is unique for each fresh checkout.
+                    # It lets the consumer distinguish a re-subscription from
+                    # a retry of an earlier callback for the same route.
+                    "notification_id": str(params.get("MerchantTradeNo", item.get("merchant_trade_no", ""))),
                     "email": email,
                     "route": route,
                     "target_price": int(item["target_price"]),

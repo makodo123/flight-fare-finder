@@ -58,7 +58,14 @@ def handler(event, _context):
             continue
         email = str(message["email"]).strip().lower()
         route = str(message["route"]).upper()
+        # A person may cancel and later start a new subscription for the same
+        # route.  Preserve idempotency for retries of one SQS message, while
+        # allowing each distinct subscription/payment event to send its own
+        # welcome email.
+        notification_id = str(message.get("notification_id", "")).strip()
         pk = f"status#{email}#{route}#{event_type}"
+        if notification_id:
+            pk = f"{pk}#{notification_id}"
         if already_sent(pk):
             continue
         label = html.escape(route_label(route))

@@ -63,6 +63,9 @@ def handler(event, _context):
             MessageBody=json.dumps(
                 {
                     "event_type": "welcome",
+                    # TotalSuccessTimes is stable for retries of the same
+                    # renewal and advances for each successfully paid period.
+                    "notification_id": f"{item.get('merchant_trade_no', '')}-{successful_times}",
                     "email": item["email"],
                     "route": item["route"],
                     "target_price": int(item["target_price"]),
